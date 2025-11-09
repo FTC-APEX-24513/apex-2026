@@ -6,6 +6,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import edu.exeter.apex.ftc.teamcode.subsystems.LimelightJava;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 
+//Note, this is inefficient. Please do not use this.
+
 @TeleOp(name = "AprilTag Vision Omni Localization", group = "Vision")
 public class AprilTagLocalizationTest extends OpMode {
     private LimelightJava limelight = new LimelightJava();
