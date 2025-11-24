@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import edu.exeter.apex.ftc.teamcode.subsystems.Intake;
+import edu.exeter.apex.ftc.teamcode.subsystems.LimelightJava;
 import edu.exeter.apex.ftc.teamcode.subsystems.Outtake;
 
 import pedroPathing.Constants;
@@ -30,6 +31,7 @@ public class blueBottom_3 extends OpMode {
 
     private Intake intake;
     private Outtake outtake;
+    private LimelightJava limelight;
 
     private PathChain blueStartToScore, blueScoreToTop, blueTopIntake, blueTopToScore, blueScoreToMiddle, blueMiddleIntake, blueMiddleToScore, blueScoreToBottom, blueBottomIntake, blueBottomToScore;
 
@@ -44,6 +46,8 @@ public class blueBottom_3 extends OpMode {
         follower.setStartingPose(startPoseBlueBottom);
         intake = new Intake(hardwareMap);
         outtake = new Outtake(hardwareMap);
+        limelight = new LimelightJava();
+        limelight.init(hardwareMap, telemetry);
     }
 
     @Override
@@ -160,6 +164,8 @@ public class blueBottom_3 extends OpMode {
                 if (!follower.isBusy()) {
                     intake.intakeStop();
                     follower.followPath(blueTopToScore);
+                    limelight.update();
+                    limelight.localize();
                     outtake.outtake();
                     setPathState(4);
                 }
@@ -187,6 +193,8 @@ public class blueBottom_3 extends OpMode {
                 if (!follower.isBusy()) {
                     intake.intakeStop();
                     follower.followPath(blueMiddleToScore);
+                    limelight.update();
+                    limelight.localize();
                     outtake.outtake();
                     setPathState(7);
                 }
@@ -214,6 +222,8 @@ public class blueBottom_3 extends OpMode {
                 if (!follower.isBusy()) {
                     intake.intakeStop();
                     follower.followPath(blueBottomToScore);
+                    limelight.update();
+                    limelight.localize();
                     outtake.outtake();
                     setPathState(10);
                 }
