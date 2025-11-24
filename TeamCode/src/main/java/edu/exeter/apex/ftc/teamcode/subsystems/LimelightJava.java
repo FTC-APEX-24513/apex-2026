@@ -1,6 +1,12 @@
 package edu.exeter.apex.ftc.teamcode.subsystems;
 
+import static pedroPathing.Tuning.follower;
+
 import android.util.Size;
+
+import com.pedropathing.geometry.BezierLine;
+import com.pedropathing.geometry.PedroCoordinates;
+import com.pedropathing.geometry.Pose;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -11,6 +17,7 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 import java.util.ArrayList;
 import java.util.List;
+import pedroPathing.Constants;
 
 public class LimelightJava {
     private AprilTagProcessor aprilTagProcessor;
@@ -25,7 +32,7 @@ public class LimelightJava {
                 .setDrawTagOutline(true)
                 .setDrawAxes(true)
                 .setDrawCubeProjection(false)
-                .setOutputUnits(DistanceUnit.CM, AngleUnit.DEGREES)
+                .setOutputUnits(DistanceUnit.INCH, AngleUnit.DEGREES)
                 .build();
 
         VisionPortal.Builder builder = new VisionPortal.Builder();
@@ -68,6 +75,34 @@ public class LimelightJava {
     public void stop() {
         if (visionPortal != null) {
             visionPortal.close();
+        }
+    }
+    public void localize() {
+
+        if (detectedTags.isEmpty()) return;
+        AprilTagDetection tag = detectedTags.get(0);
+
+        if (tag.ftcPose == null) return;
+
+        if(tag.ftcPose != null){
+            double offsetX = tag.ftcPose.x;
+            double offsetY = tag.ftcPose.y;
+            double offsetHeading = tag.ftcPose.yaw;
+
+            Pose ftcRelativePose = new Pose(offsetX, offsetY, offsetHeading);
+            Pose relativePose = ftcRelativePose.getAsCoordinateSystem(PedroCoordinates.INSTANCE);
+            Pose targetPose = new Pose(0, 39.3701, 0);
+            Pose blueScore = new Pose();
+
+            follower.setPose(relativePose);
+            follower.followPath(
+                    follower.pathBuilder()
+                    .addPath(new BezierLine(relativePose, targetPose))
+                    .setLinearHeadingInterpolation(relativePose.getHeading(), targetPose.getHeading())
+                            .build()
+            );
+
+            follower.setPose(blueScore);
         }
     }
 }

@@ -9,6 +9,9 @@ import com.pedropathing.util.Timer;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
+import edu.exeter.apex.ftc.teamcode.subsystems.Intake;
+import edu.exeter.apex.ftc.teamcode.subsystems.LimelightJava;
+import edu.exeter.apex.ftc.teamcode.subsystems.Outtake;
 
 import pedroPathing.Constants;
 
@@ -26,6 +29,10 @@ public class blueBottom_3 extends OpMode {
     private final Pose blueBottomRowEnd = new Pose(20, 36, Math.toRadians(180));
     private final Pose blueScore = new Pose(); //Scoring Pose will be determined by testing
 
+    private Intake intake;
+    private Outtake outtake;
+    private LimelightJava limelight;
+
     private PathChain blueStartToScore, blueScoreToTop, blueTopIntake, blueTopToScore, blueScoreToMiddle, blueMiddleIntake, blueMiddleToScore, blueScoreToBottom, blueBottomIntake, blueBottomToScore;
 
     @Override
@@ -37,6 +44,10 @@ public class blueBottom_3 extends OpMode {
         follower = Constants.createFollower(hardwareMap);
         buildPaths();
         follower.setStartingPose(startPoseBlueBottom);
+        intake = new Intake(hardwareMap);
+        outtake = new Outtake(hardwareMap);
+        limelight = new LimelightJava();
+        limelight.init(hardwareMap, telemetry);
     }
 
     @Override
@@ -127,6 +138,7 @@ public class blueBottom_3 extends OpMode {
             case 0:
                 // Start → first scoring position
                 follower.followPath(blueStartToScore);
+                outtake.outtake();
                 setPathState(1);
                 break;
 
@@ -141,6 +153,7 @@ public class blueBottom_3 extends OpMode {
             case 2:
                 // Move to top row for intake
                 if (!follower.isBusy()) {
+                    intake.intake();
                     follower.followPath(blueTopIntake);
                     setPathState(3);
                 }
@@ -149,7 +162,11 @@ public class blueBottom_3 extends OpMode {
             case 3:
                 // After finishing top intake path
                 if (!follower.isBusy()) {
+                    intake.intakeStop();
                     follower.followPath(blueTopToScore);
+                    limelight.update();
+                    limelight.localize();
+                    outtake.outtake();
                     setPathState(4);
                 }
                 break;
@@ -165,6 +182,7 @@ public class blueBottom_3 extends OpMode {
             case 5:
                 // Move to middle row for intake
                 if (!follower.isBusy()) {
+                    intake.intake();
                     follower.followPath(blueMiddleIntake);
                     setPathState(6);
                 }
@@ -173,7 +191,11 @@ public class blueBottom_3 extends OpMode {
             case 6:
                 // Finish middle intake
                 if (!follower.isBusy()) {
+                    intake.intakeStop();
                     follower.followPath(blueMiddleToScore);
+                    limelight.update();
+                    limelight.localize();
+                    outtake.outtake();
                     setPathState(7);
                 }
                 break;
@@ -189,6 +211,7 @@ public class blueBottom_3 extends OpMode {
             case 8:
                 // Move to bottom row for intake
                 if (!follower.isBusy()) {
+                    intake.intake();
                     follower.followPath(blueBottomIntake);
                     setPathState(9);
                 }
@@ -197,7 +220,11 @@ public class blueBottom_3 extends OpMode {
             case 9:
                 // Finish bottom intake
                 if (!follower.isBusy()) {
+                    intake.intakeStop();
                     follower.followPath(blueBottomToScore);
+                    limelight.update();
+                    limelight.localize();
+                    outtake.outtake();
                     setPathState(10);
                 }
                 break;
