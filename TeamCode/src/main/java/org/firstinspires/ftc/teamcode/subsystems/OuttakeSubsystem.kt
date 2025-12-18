@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.HardwareMap
 
 class OuttakeSubsystem(hardwareMap: HardwareMap) {
-    private val motor: DcMotor = hardwareMap.dcMotor.get("intake").apply {
+    private val motor: DcMotor = hardwareMap.dcMotor.get("flywheel").apply {
         zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
     };
 

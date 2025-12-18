@@ -22,9 +22,9 @@ public class Constants {
             .leftRearMotorName("leftRear") // Port 2
             .rightFrontMotorName("rightFront") // Port 3
             .leftFrontMotorDirection(DcMotorSimple.Direction.REVERSE)
-            .leftRearMotorDirection(DcMotorSimple.Direction.FORWARD)
+            .leftRearMotorDirection(DcMotorSimple.Direction.REVERSE)
             .rightFrontMotorDirection(DcMotorSimple.Direction.REVERSE)
-            .rightRearMotorDirection(DcMotorSimple.Direction.REVERSE);
+            .rightRearMotorDirection(DcMotorSimple.Direction.FORWARD);
 
     public static ThreeWheelConstants localizerConstants = new ThreeWheelConstants()
             .forwardTicksToInches(0.15698020096615317)
