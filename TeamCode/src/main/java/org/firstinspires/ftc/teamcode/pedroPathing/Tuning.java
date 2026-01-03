@@ -113,6 +113,8 @@ public class Tuning extends SelectableOpMode {
     public static void stopRobot() {
         follower.startTeleopDrive(true);
         follower.setTeleOpDrive(0,0,0,true);
+
+
     }
 }
 
@@ -378,11 +380,13 @@ class ForwardVelocityTuner extends OpMode {
         follower.update();
         draw();
 
+        telemetryM.debug("pose", follower.getPose());
 
         if (!end) {
             if (Math.abs(follower.getPose().getX()) > (DISTANCE + 72)) {
                 end = true;
                 stopRobot();
+                telemetryM.debug("Robot Stopped");
             } else {
                 follower.setTeleOpDrive(1,0,0,true);
                 //double currentVelocity = Math.abs(follower.getVelocity().getXComponent());
