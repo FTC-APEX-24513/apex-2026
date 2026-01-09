@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.opmodes.auto
+package edu.exeter.apex.ftc.teamcode.opmodes
 
 import com.pedropathing.follower.Follower
 import com.pedropathing.geometry.BezierLine
@@ -16,7 +16,7 @@ import org.firstinspires.ftc.teamcode.subsystems.TransferSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.SpindexerSubsystem
 
 @Autonomous(name = "blueTop3", group = "Examples")
-abstract class BlueTop2 : OpMode() {
+abstract class BlueTop3: OpMode() {
 
     private lateinit var follower: Follower
     private lateinit var pathTimer: Timer
@@ -35,11 +35,21 @@ abstract class BlueTop2 : OpMode() {
     private lateinit var blueScoreToTopStart: PathChain
     private lateinit var blueTopStartToTopEnd: PathChain
     private lateinit var blueTopEndToScore: PathChain
+    private lateinit var blueScoreToMiddleStart: PathChain
+    private lateinit var blueMiddleStartToMiddleEnd: PathChain
+    private lateinit var blueMiddleEndToScore: PathChain
+    private lateinit var blueScoreToBottomStart: PathChain
+    private lateinit var blueBottomStartToBottomEnd: PathChain
+    private lateinit var blueBottomEndToScore: PathChain
 
     // Poses
     private val startPoseBlueTop = Pose(56.0, 88.0, Math.toRadians(180.0))
     private val blueTopRowStart = Pose(40.0, 84.0, Math.toRadians(180.0))
     private val blueTopRowEnd = Pose(20.0, 84.0, Math.toRadians(180.0))
+    private val blueMiddleRowStart = Pose(40.0, 60.0, Math.toRadians(180.0))
+    private val blueMiddleRowEnd = Pose(20.0, 60.0, Math.toRadians(180.0))
+    private val blueBottomRowStart = Pose(40.0, 36.0, Math.toRadians(180.0))
+    private val blueBottomRowEnd = Pose(20.0, 36.0, Math.toRadians(180.0))
     private val blueScore = Pose(48.0, 48.0, Math.toRadians(180.0))
 
     override fun init() {
@@ -82,6 +92,36 @@ abstract class BlueTop2 : OpMode() {
             .addPath(BezierLine(blueTopRowEnd, blueScore))
             .setLinearHeadingInterpolation(blueTopRowEnd.heading, blueScore.heading)
             .build()
+
+        blueScoreToMiddleStart = follower.pathBuilder()
+            .addPath(BezierLine(blueScore, blueMiddleRowStart))
+            .setLinearHeadingInterpolation(blueScore.heading, blueMiddleRowStart.heading)
+            .build()
+
+        blueMiddleStartToMiddleEnd = follower.pathBuilder()
+            .addPath(BezierLine(blueMiddleRowStart, blueMiddleRowEnd))
+            .setLinearHeadingInterpolation(blueMiddleRowStart.heading, blueMiddleRowEnd.heading)
+            .build()
+
+        blueMiddleEndToScore = follower.pathBuilder()
+            .addPath(BezierLine(blueMiddleRowEnd, blueScore))
+            .setLinearHeadingInterpolation(blueMiddleRowEnd.heading, blueScore.heading)
+            .build()
+
+        blueScoreToBottomStart = follower.pathBuilder()
+            .addPath(BezierLine(blueScore, blueBottomRowStart))
+            .setLinearHeadingInterpolation(blueScore.heading, blueBottomRowStart.heading)
+            .build()
+
+        blueBottomStartToBottomEnd = follower.pathBuilder()
+            .addPath(BezierLine(blueBottomRowStart, blueBottomRowEnd))
+            .setLinearHeadingInterpolation(blueBottomRowStart.heading, blueBottomRowEnd.heading)
+            .build()
+
+        blueBottomEndToScore = follower.pathBuilder()
+            .addPath(BezierLine(blueBottomRowEnd, blueScore))
+            .setLinearHeadingInterpolation(blueBottomRowEnd.heading, blueScore.heading)
+            .build()
     }
 
     private fun autonomousPathUpdate() {
@@ -107,9 +147,39 @@ abstract class BlueTop2 : OpMode() {
                 pathState = 4
             }
             4 -> if (!follower.isBusy) {
+                follower.followPath(blueScoreToMiddleStart)
                 pathState = 5
             }
-            5 -> { /* Finished */ }
+            5 -> if (!follower.isBusy) {
+                intake.collect()
+                follower.followPath(blueMiddleStartToMiddleEnd)
+                pathState = 6
+            }
+            6 -> if (!follower.isBusy) {
+                intake.stop()
+                follower.followPath(blueMiddleEndToScore)
+                outtake.launch()
+                pathState = 7
+            }
+            7 -> if (!follower.isBusy) {
+                follower.followPath(blueScoreToBottomStart)
+                pathState = 8
+            }
+            8 -> if (!follower.isBusy) {
+                intake.collect()
+                follower.followPath(blueBottomStartToBottomEnd)
+                pathState = 9
+            }
+            9 -> if (!follower.isBusy) {
+                intake.stop()
+                follower.followPath(blueBottomEndToScore)
+                outtake.launch()
+                pathState = 10
+            }
+            10 -> if (!follower.isBusy) {
+                pathState = 11
+            }
+            11 -> { /* Auto finished */ }
         }
     }
 
